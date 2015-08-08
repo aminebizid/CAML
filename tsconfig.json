@@ -23,6 +23,7 @@
         "./CBorder.ts",
         "./CContentControl.ts",
         "./CControl.ts",
+        "./Caml.ts",
         "./app.ts"
     ]
 }

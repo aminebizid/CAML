@@ -7,15 +7,29 @@ var CContentControl = (function (_super) {
     __extends(CContentControl, _super);
     function CContentControl() {
         _super.call(this);
+        this._childSizeChanged = false;
         this.Children = [];
     }
+    Object.defineProperty(CContentControl.prototype, "ChildSizeChanged", {
+        get: function () {
+            return this._childSizeChanged;
+        },
+        set: function (value) {
+            this._childSizeChanged = value;
+            if (value && this.Width == "auto")
+                this.NeedReorganize = true;
+        },
+        enumerable: true,
+        configurable: true
+    });
     CContentControl.prototype.AddChild = function (child) {
         child.Parent = this;
         this.Children.push(child);
+        child.ParentSizeChanged = true;
     };
-    CContentControl.prototype.ParentResize = function () {
+    CContentControl.prototype.NotifySizeChange = function () {
         for (var i = 0; i < this.Children.length; i++) {
-            this.Children[i].ParentResize();
+            this.Children[i].ParentSizeChanged = true;
         }
     };
     CContentControl.prototype.Reorganize = function () {
