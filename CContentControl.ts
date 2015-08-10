@@ -11,28 +11,19 @@ class CContentControl extends CControl {
           if (value && this.Width=="auto") this.NeedReorganize = true;
       }
 
-
-
-
   constructor() {
     super();
     this.Children = [];
   }
 
-
-
-
   public AddChild(child: CControl) : void {
     child.Parent = this;
     this.Children.push(child);
-    child.ParentSizeChanged = true;
+    child.EventHandler = this.GetEventHandler();
+
   }
 
- public NotifySizeChange() : void {
-   for (var i=0;i<this.Children.length; i++) {
-     this.Children[i].ParentSizeChanged = true;
-   }
- }
+
 
   public Reorganize(): void {
     for (var i=0;i<this.Children.length; i++) {

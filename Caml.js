@@ -7,15 +7,15 @@ var Caml = (function (_super) {
     __extends(Caml, _super);
     function Caml(idCanvas) {
         var _this = this;
+        this.IdCanvas = idCanvas;
+        this.EventHandler = new CEventHandler();
         _super.call(this);
-        this.idCanvas = idCanvas;
         this.Parent = null;
         this.ParentCanvas = document.getElementById(idCanvas);
         this.ParentContext = this.ParentCanvas.getContext("2d");
         this.Width = this.Height = "*";
         this.GetHTMLSize();
-        this.ParentSizeChanged = true;
-        window.addEventListener("resize", function () { return _this.ParentSizeChanged = true; });
+        window.addEventListener("resize", function () { return _this.EventHandler.Push(_this, "resize", null); });
     }
     Caml.prototype.GetHTMLSize = function () {
         if (this.ParentCanvas.attributes.getNamedItem('width') != null)
@@ -31,25 +31,14 @@ var Caml = (function (_super) {
     };
     Caml.prototype.Reorganize = function () {
         if (this.NeedReorganize) {
-            console.log("reorganize");
+            console.log("reorganize Caml");
             this.NeedReorganize = false;
-            if (this.ParentSizeChanged) {
-                if (this.Width == "*") {
-                    this.ActualWidth = document.body.clientWidth;
-                    this.NeedDraw = true;
-                }
-                if (this.Height == "*") {
-                    this.ActualHeight = document.body.clientHeight;
-                    this.NeedDraw = true;
-                }
-                this.NotifySizeChange();
-            }
         }
         _super.prototype.Reorganize.call(this);
     };
     Caml.prototype.Draw = function () {
         if (this.NeedDraw) {
-            console.log("drawing");
+            console.log("drawing Caml");
             this.NeedDraw = false;
             this.Canvas = document.createElement("Canvas");
             this.Canvas.width = this.ActualWidth;
@@ -64,13 +53,8 @@ var Caml = (function (_super) {
         }
     };
     Caml.prototype.Render = function () {
-        console.log("Rendring");
+        console.log("Rendring Caml");
         this.NeedRender = false;
-        if (this.ParentSizeChanged) {
-            this.ParentSizeChanged = false;
-            this.ParentCanvas.width = this.ActualWidth;
-            this.ParentCanvas.height = this.ActualHeight;
-        }
         _super.prototype.Render.call(this);
         this.ParentContext.drawImage(this.Canvas, 0, 0, this.ActualWidth, this.ActualHeight, 0, 0, this.ActualWidth, this.ActualHeight);
     };

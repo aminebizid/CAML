@@ -11,13 +11,18 @@ class CControl {
   public ActualWidth : number;
   public ActualHeight : number;
 
+  public EventHandler : CEventHandler;
+
+
   private _width : string;
   get Width(): string {
     return this._width;
   }
   set Width(value:string) {
     this._width = value;
-    this.SizeChanged = true;
+
+    if (this.EventHandler != null)
+      this.EventHandler.Push(this,"resize",null);
   }
 
   private _height : string;
@@ -26,7 +31,8 @@ class CControl {
   }
   set Height(value:string) {
     this._height = value;
-    this.SizeChanged = true;
+    if (this.EventHandler != null)
+      this.EventHandler.Push(this,"resize",null);
   }
 
 
@@ -40,34 +46,17 @@ class CControl {
     }
 
 
-  private _parentSizeChanged :Boolean = false;
-    get ParentSizeChanged():Boolean {
-        return this._parentSizeChanged;
-    }
-    set ParentSizeChanged(value:Boolean) {
-        this._parentSizeChanged = value;
-        if (value && this.Width=="*") this.NeedReorganize = true;
-    }
-
-    private _sizeChanged :Boolean = false;
-      get SizeChanged():Boolean {
-          return this._sizeChanged;
-      }
-      set SizeChanged(value:Boolean) {
-          this._sizeChanged = value;
-          if (value) {
-            this.NeedReorganize = true;
-            //this.Parent.ChildSizeChanged = true;
-
-          }
-      }
-
 
 
   constructor() {
-
+    this.EventHandler = this.GetEventHandler();
   }
 
+
+  public GetEventHandler(): CEventHandler {
+    if (this.Parent == null) return this.EventHandler;
+    return this.Parent.GetEventHandler();
+  }
 
   public ComputeSize() {
 

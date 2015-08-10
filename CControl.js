@@ -1,8 +1,7 @@
 var CControl = (function () {
     function CControl() {
         this._needDraw = false;
-        this._parentSizeChanged = false;
-        this._sizeChanged = false;
+        this.EventHandler = this.GetEventHandler();
     }
     Object.defineProperty(CControl.prototype, "Width", {
         get: function () {
@@ -10,7 +9,8 @@ var CControl = (function () {
         },
         set: function (value) {
             this._width = value;
-            this.SizeChanged = true;
+            if (this.EventHandler != null)
+                this.EventHandler.Push(this, "resize", null);
         },
         enumerable: true,
         configurable: true
@@ -21,7 +21,8 @@ var CControl = (function () {
         },
         set: function (value) {
             this._height = value;
-            this.SizeChanged = true;
+            if (this.EventHandler != null)
+                this.EventHandler.Push(this, "resize", null);
         },
         enumerable: true,
         configurable: true
@@ -36,31 +37,11 @@ var CControl = (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(CControl.prototype, "ParentSizeChanged", {
-        get: function () {
-            return this._parentSizeChanged;
-        },
-        set: function (value) {
-            this._parentSizeChanged = value;
-            if (value && this.Width == "*")
-                this.NeedReorganize = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(CControl.prototype, "SizeChanged", {
-        get: function () {
-            return this._sizeChanged;
-        },
-        set: function (value) {
-            this._sizeChanged = value;
-            if (value) {
-                this.NeedReorganize = true;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
+    CControl.prototype.GetEventHandler = function () {
+        if (this.Parent == null)
+            return this.EventHandler;
+        return this.Parent.GetEventHandler();
+    };
     CControl.prototype.ComputeSize = function () {
     };
     CControl.prototype.Reorganize = function () {

@@ -25,12 +25,7 @@ var CContentControl = (function (_super) {
     CContentControl.prototype.AddChild = function (child) {
         child.Parent = this;
         this.Children.push(child);
-        child.ParentSizeChanged = true;
-    };
-    CContentControl.prototype.NotifySizeChange = function () {
-        for (var i = 0; i < this.Children.length; i++) {
-            this.Children[i].ParentSizeChanged = true;
-        }
+        child.EventHandler = this.GetEventHandler();
     };
     CContentControl.prototype.Reorganize = function () {
         for (var i = 0; i < this.Children.length; i++) {

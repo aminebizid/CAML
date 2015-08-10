@@ -17,37 +17,6 @@ class CBorder extends CControl {
     if (this.NeedReorganize) {
         console.log("Reorganizing border")
       this.NeedReorganize = false;
-      if (this.SizeChanged) {
-
-        if (this.Width != "*" && this.Width != "auto")
-        {
-          this.ActualWidth = +this.Width;
-          this.NeedDraw = true;
-        }
-        if (this.Height != "*" && this.Height != "auto")
-        {
-          this.ActualHeight = +this.Height;
-          this.NeedDraw = true;
-        }
-
-      }
-
-
-      if (this.ParentSizeChanged) {
-        if (this.Width == "*")
-        {
-          this.ActualWidth = this.Parent.ActualWidth;
-          this.NeedDraw = true;
-        }
-
-        if (this.Height == "*") {
-          this.ActualHeight = this.Parent.ActualHeight
-            this.NeedDraw = true;
-        }
-      }
-
-
-
     }
   }
 

@@ -23,6 +23,8 @@
         "./CBorder.ts",
         "./CContentControl.ts",
         "./CControl.ts",
+        "./CEvent.ts",
+        "./CEventHandler.ts",
         "./Caml.ts",
         "./app.ts"
     ]

@@ -2,19 +2,20 @@ class  Caml extends CContentControl {
 
   public ParentCanvas: HTMLCanvasElement;
   public ParentContext : CanvasRenderingContext2D;
+ public IdCanvas : string;
 
-
-    constructor(public idCanvas:string) {
-
+    constructor(idCanvas:string) {
+      this.IdCanvas = idCanvas;
+      this.EventHandler = new CEventHandler();
         super();
+
         this.Parent = null;
         this.ParentCanvas = <HTMLCanvasElement>document.getElementById(idCanvas);
         this.ParentContext = this.ParentCanvas.getContext("2d");
         // if no width/height defined in HTML Canvas element, Canvas will be resized to body size
         this.Width = this.Height = "*";
         this.GetHTMLSize();
-        this.ParentSizeChanged = true;
-        window.addEventListener("resize",() => this.ParentSizeChanged = true);
+        window.addEventListener("resize",() => this.EventHandler.Push(<CControl>this,"resize",null));
 
     }
 
@@ -39,20 +40,9 @@ class  Caml extends CContentControl {
 
     public Reorganize() : void {
       if (this.NeedReorganize) {
-        console.log("reorganize");
+        console.log("reorganize Caml");
         this.NeedReorganize = false;
-        if (this.ParentSizeChanged) {
-          if (this.Width == "*") {
-            this.ActualWidth = document.body.clientWidth;
-            this.NeedDraw = true;
-          }
 
-          if (this.Height == "*") {
-            this.ActualHeight = document.body.clientHeight
-              this.NeedDraw = true;
-          }
-          this.NotifySizeChange();
-        }
 
 
 
@@ -63,7 +53,7 @@ class  Caml extends CContentControl {
 
     public Draw(): void {
       if (this.NeedDraw) {
-        console.log("drawing");
+        console.log("drawing Caml");
         this.NeedDraw = false;
         this.Canvas = <HTMLCanvasElement>document.createElement("Canvas");
         this.Canvas.width = this.ActualWidth;
@@ -82,14 +72,9 @@ class  Caml extends CContentControl {
 
 
     public Render() : void {
-      console.log("Rendring");
+      console.log("Rendring Caml");
       this.NeedRender = false;
 
-      if (this.ParentSizeChanged) {
-        this.ParentSizeChanged = false;
-        this.ParentCanvas.width = this.ActualWidth;
-        this.ParentCanvas.height = this.ActualHeight;
-      }
 
       super.Render();
 
