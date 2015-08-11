@@ -9,8 +9,7 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "sourceMap": true,
-        "outDir": "./Dist/"
+        "sourceMap": true
     },
     "filesGlob": [
         "./**/*.ts",
@@ -18,13 +17,6 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./CBorder.ts",
-        "./CContentControl.ts",
-        "./CControl.ts",
-        "./CEvent.ts",
-        "./CEventHandler.ts",
-        "./CLog.ts",
-        "./Caml.ts",
         "./app.ts"
     ]
 }
