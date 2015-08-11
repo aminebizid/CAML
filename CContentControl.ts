@@ -1,15 +1,7 @@
 class CContentControl extends CControl {
     public Children: Array<CControl>;
 
-
-    private _childSizeChanged :Boolean = false;
-      get ChildSizeChanged():Boolean {
-          return this._childSizeChanged;
-      }
-      set ChildSizeChanged(value:Boolean) {
-          this._childSizeChanged = value;
-          if (value && this.Width=="auto") this.NeedReorganize = true;
-      }
+    
 
   constructor() {
     super();
@@ -20,27 +12,34 @@ class CContentControl extends CControl {
     child.Parent = this;
     this.Children.push(child);
     child.EventHandler = this.GetEventHandler();
-
+    child.PushReorgEvent("AddChild");
   }
 
 
 
   public Reorganize(): void {
-    for (var i=0;i<this.Children.length; i++) {
-      this.Children[i].Reorganize();
-    }
+    super.Reorganize();
+  
+  }
+
+  public ReorganizeChildren() {
+      for (var i=0;i<this.Children.length; i++) {      
+        this.Children[i].Reorganize();
+    }    
   }
 
   public Draw():void {
+    super.Draw();
     for (var i=0;i<this.Children.length; i++) {
       this.Children[i].Draw();
     }
   }
 
   public Render() : void {
-    for (var i=0;i<this.Children.length; i++) {
+   /* for (var i=0;i<this.Children.length; i++) {
       this.Children[i].Render();
-    }
+    }*/
+    super.Render();
   }
 
 }

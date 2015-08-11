@@ -6,3 +6,4 @@ var CEvent = (function () {
     }
     return CEvent;
 })();
+//# sourceMappingURL=CEvent.js.map

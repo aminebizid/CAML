@@ -1,16 +1,19 @@
 class CEventHandler {
 
-  public Events : Array<CEvent>;
+  public Events: { [id: string] : Array<CEvent>; }; 
+
   constructor() {
-    this.Events = [];
+    this.Events = {};
   }
 
-  public Push(sender : CControl, event :any,target:CControl) : void {
-    this.Events.push(event);
+  public Push(type:string, sender : CControl, event :any,target:CControl) : void {
+    if (this.Events[type]==null) this.Events[type] = [];
+    this.Events[type].push(new CEvent(sender,event,target));
   }
 
-  public Shift() : CEvent {
-    return this.Events.shift();
+  public Shift(type:string) : CEvent {
+    if (this.Events[type]==null) return null;
+    return this.Events[type].shift();
   }
 
 }
