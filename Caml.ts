@@ -95,20 +95,19 @@ class  Caml extends CContentControl {
     counter:number;
     public ShowFPS : boolean;
 
-    public Loop(t:number) : void {      
-       this.ParseRenderEvents();
+    public Loop() : void {      
+      this.ParseRenderEvents();
       if (this.ShowFPS)
-    {
-      this.c++;
-      var d = new Date();
-      var n = d.getTime();
-      if (new Date().getTime()>this.x)
       {
-        this.x=n+500;
-        this.counter=this.c*2;              
-        this.c=0;
-      }
-
+        this.c++;
+        var d = new Date();
+        var n = d.getTime();
+        if (new Date().getTime()>this.x)
+        {
+          this.x=n+500;
+          this.counter=this.c*2;              
+          this.c=0;
+        }
      
       this.ParentContext.fillStyle="black";
       this.ParentContext.fillRect(this.ActualWidth-60,this.ActualHeight-20,60,20);
@@ -124,7 +123,7 @@ class  Caml extends CContentControl {
 
 
       
-      requestAnimationFrame(() => this.Loop(n));
+      requestAnimationFrame(() => this.Loop());
     }
 
    
@@ -135,7 +134,7 @@ class  Caml extends CContentControl {
       this.x = t+500;
       this.counter = 0;
       this.c=0;
-      this.Loop(t);
+      this.Loop();
     }
 
    
