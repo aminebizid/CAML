@@ -1,4 +1,3 @@
 # Exclude js files
-    /*.js
-    /*.js.map
+    Dist/*
     
