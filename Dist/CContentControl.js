@@ -11,27 +11,38 @@ var CContentControl = (function (_super) {
         this.Children = [];
     }
     CContentControl.prototype.AddChild = function (child) {
-        child.Parent = this;
+        Log("Adding child " + child.Name + " to " + this.Name);
         this.Children.push(child);
-        child.EventHandler = this.GetEventHandler();
-        child.PushReorgEvent("AddChild");
+        child.Parent = this;
+        child.NeedArrange = true;
     };
-    CContentControl.prototype.Reorganize = function () {
-        _super.prototype.Reorganize.call(this);
-    };
-    CContentControl.prototype.ReorganizeChildren = function () {
-        for (var i = 0; i < this.Children.length; i++) {
-            this.Children[i].Reorganize();
+    CContentControl.prototype.Arrange = function () {
+        _super.prototype.Arrange.call(this);
+        if (this.NeedArrange) {
+            this.NeedArrange = false;
+            for (var i = 0; i < this.Children.length; i++) {
+                this.Children[i].NeedArrange = true;
+            }
         }
+        for (var i = 0; i < this.Children.length; i++)
+            this.Children[i].Arrange();
+    };
+    CContentControl.prototype.Render = function () {
+        this.RenderChildren();
+        _super.prototype.Render.call(this);
     };
     CContentControl.prototype.Draw = function () {
-        _super.prototype.Draw.call(this);
+        for (var i = 0; i < this.Children.length; i++)
+            this.Children[i].NeedRender = true;
+    };
+    CContentControl.prototype.DrawChildren = function () {
         for (var i = 0; i < this.Children.length; i++) {
             this.Children[i].Draw();
         }
     };
-    CContentControl.prototype.Render = function () {
-        _super.prototype.Render.call(this);
+    CContentControl.prototype.RenderChildren = function () {
+        for (var i = 0; i < this.Children.length; i++)
+            this.Children[i].Render();
     };
     return CContentControl;
 })(CControl);

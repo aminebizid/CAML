@@ -24,6 +24,9 @@
         "./CEvent.ts",
         "./CEventHandler.ts",
         "./CLog.ts",
-        "./Caml.ts"
+        "./CStackPanel.ts",
+        "./CUIElement.ts",
+        "./Caml.ts",
+        "./app.ts"
     ]
 }

@@ -1,5 +1,3 @@
-// Grid branch
-
 class  Caml extends CContentControl {
 
   public ParentCanvas: HTMLCanvasElement;
@@ -14,10 +12,9 @@ class  Caml extends CContentControl {
         this.ParentCanvas = <HTMLCanvasElement>document.getElementById(idCanvas);
         this.ParentContext = this.ParentCanvas.getContext("2d");
         this.Width = this.Height = "*";
-        this.GetHTMLSize();
-        this.EventHandler = new CEventHandler();    
-        this.EventHandler.Push("reorg",<CControl>this,"resize",<CControl>this)    
-        window.addEventListener("resize",() =>  this.EventHandler.Push("reorg",<CControl>this,"resize",<CControl>this));
+        this.GetHTMLSize();        
+        this.Resize();       
+        window.addEventListener("resize",() => this.Resize() );
 
     }
 
@@ -30,73 +27,60 @@ class  Caml extends CContentControl {
           this.Height = this.ParentCanvas.attributes.getNamedItem('height').value;
     }
 
-
-    public Reorganize() : void {  
-       super.Reorganize();   
-       this.ReorganizeChildren();    
-
+    private Resize() {
+     this.NeedArrange = true;   
+        
     }
 
+    public Arrange() {
+      super.Arrange();
+    }
 
     public Draw(): void {      
-        super.Draw();
+        if (this.NeedDraw) {          
+            this.NeedDraw = false;
+            Log("Drawing caml");
+            this.PrepareContext();                      
        
-        this.Context.fillStyle="red";
-        this.Context.fillRect(10,10,this.ActualWidth - 20,this.ActualHeight - 20);
+            this.Context.fillStyle="red";
+            this.Context.fillRect(0,0,this.ActualWidth ,this.ActualHeight );
 
-        this.Context.strokeStyle="black";
-        this.Context.strokeRect(0,0,this.ActualWidth,this.ActualHeight);
-       
-        this.PushRenderEvent("draw")        
+           /* this.Context.strokeStyle="black";
+            this.Context.strokeRect(0,0,this.ActualWidth,this.ActualHeight);*/
+            this.NeedRender = true;
+            super.Draw();
+           
+      }
+      this.DrawChildren(); 
+         
+          
     }
 
 
     public Render() : void {
-      console.log("Rendring Caml " + this.ActualWidth+ " "+ this.ActualHeight);      
-      this.ParentCanvas.width = document.body.clientWidth-30;
-      this.ParentCanvas.height = document.body.clientHeight-30;
+        
+      this.RenderChildren();
+
+        if (this.NeedRender) {
+          this.NeedRender = false;
+
+          console.log("Rendring Caml " + this.ActualWidth+ " "+ this.ActualHeight);      
+          this.ParentCanvas.width = document.body.clientWidth-30;
+          this.ParentCanvas.height = document.body.clientHeight-30;      
+          
+          this.ParentContext.drawImage(this.Canvas,0,0,this.ActualWidth, this.ActualHeight,0,0,this.ActualWidth, this.ActualHeight);
+        }
       
-
-      this.ParentContext.drawImage(this.Canvas,0,0,this.ActualWidth, this.ActualHeight,0,0,this.ActualWidth, this.ActualHeight);
     }
 
 
-    private ParseReorgEvents() {
-       var ev = this.EventHandler.Shift("reorg");
-      while (ev != null)
-      {
-        ev.Target.Reorganize();        
-        ev = this.EventHandler.Shift("reorg");
-      }
-    }
-
-      private ParseDrawEvents() {
-       var ev = this.EventHandler.Shift("draw");
-      while (ev != null)
-      {
-        ev.Target.Draw();        
-        ev = this.EventHandler.Shift("draw");
-      }
-    }
-
-    private ParseRenderEvents() {
-       var ev = this.EventHandler.Shift("render");
-      while (ev != null)
-      {
-        ev.Target.Render();        
-        ev = this.EventHandler.Shift("render");
-      }
-    }
-
-
-
-    x:number;
-    c:number;
-    counter:number;
+    private x:number;
+    private c:number;
+    private counter:number;
     public ShowFPS : boolean;
 
     public Loop() : void {      
-      this.ParseRenderEvents();
+      this.Render();
       if (this.ShowFPS)
       {
         this.c++;
@@ -116,13 +100,9 @@ class  Caml extends CContentControl {
       this.ParentContext.fillText(this.counter.toString()+" fps",this.ActualWidth-50,this.ActualHeight-5);
  }
 
-      this.ParseReorgEvents();
-      this.ParseDrawEvents();
-     
+      this.Arrange();
+      this.Draw();
 
-
-
-      
       requestAnimationFrame(() => this.Loop());
     }
 
@@ -130,7 +110,8 @@ class  Caml extends CContentControl {
     
     public Run() : void {   
       var d = new Date();
-      var t = d.getTime();   
+      var t = d.getTime();  
+      this.ShowFPS  = true; 
       this.x = t+500;
       this.counter = 0;
       this.c=0;

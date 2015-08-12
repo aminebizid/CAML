@@ -12,26 +12,36 @@ var CBorder = (function (_super) {
         this.Width = params.width || "*";
         this.Height = params.height || "*";
         this._background = params.background || "lightgrey";
+        this._thickness = params.thickness || 1;
     }
     Object.defineProperty(CBorder.prototype, "Background", {
         get: function () { return this._background; },
-        set: function (value) { this._background = value; this.EventHandler.Push("draw", this, "background", this); },
+        set: function (value) { this._background = value; this.NeedDraw = true; },
         enumerable: true,
         configurable: true
     });
-    CBorder.prototype.Reorganize = function () {
-        _super.prototype.Reorganize.call(this);
-        this.ReorganizeChildren();
-    };
+    Object.defineProperty(CBorder.prototype, "Thickness", {
+        get: function () { return this._thickness; },
+        set: function (value) { this._thickness = value; this.NeedDraw = true; },
+        enumerable: true,
+        configurable: true
+    });
     CBorder.prototype.Draw = function () {
-        _super.prototype.Draw.call(this);
-        this.Context.fillStyle = this.Background;
-        this.Context.fillRect(30, 30, this.ActualWidth - 60, this.ActualHeight - 60);
-        this.PushRenderEvent("draw");
-        this.Parent.PushRenderEvent("child_redraw");
-    };
-    CBorder.prototype.Render = function () {
-        _super.prototype.Render.call(this);
+        if (this.NeedDraw) {
+            this.NeedDraw = false;
+            Log("Drawing Border " + this.Background);
+            this.PrepareContext();
+            this.Context.save();
+            this.Context.fillStyle = this.Background;
+            this.Context.fillRect(0, 0, this.ActualWidth, this.ActualHeight);
+            this.Context.strokeStyle = "black";
+            this.Context.lineWidth = this.Thickness;
+            this.Context.strokeRect(0, 0, this.ActualWidth, this.ActualHeight);
+            this.Context.restore();
+            this.NeedRender = true;
+            _super.prototype.Draw.call(this);
+        }
+        this.DrawChildren();
     };
     return CBorder;
 })(CContentControl);

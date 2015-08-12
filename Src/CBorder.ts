@@ -2,8 +2,11 @@ class CBorder extends CContentControl {
 
   private _background : string;
   get Background(): string { return this._background; }
-  set Background(value:string) { this._background = value; this.EventHandler.Push("draw",<CControl>this,"background",<CControl>this)}
+  set Background(value:string) { this._background = value; this.NeedDraw = true;}
 
+private _thickness : number;
+  get Thickness(): number { return this._thickness; }
+  set Thickness(value:number) { this._thickness = value; this.NeedDraw = true;}
 
   constructor(params : any) {
     super();
@@ -11,32 +14,38 @@ class CBorder extends CContentControl {
     this.Width = params.width || "*";
     this.Height = params.height || "*";
     this._background = params.background || "lightgrey";
+    this._thickness = params.thickness || 1;
   }
 
-  public Reorganize() : void {
-    //Organize itself the organize its children
-    super.Reorganize();  
-    this.ReorganizeChildren();
-   
-  }
 
   public Draw() : void {
+   
+      if (this.NeedDraw) {
+          this.NeedDraw  = false;
+          Log("Drawing Border "+this.Background);
+          this.PrepareContext();
+            this.Context.save();
+
           
-      super.Draw();
-      this.Context.fillStyle=this.Background;
-      this.Context.fillRect(30,30,this.ActualWidth - 60,this.ActualHeight - 60);
 
+          this.Context.fillStyle=this.Background;
+          this.Context.fillRect(0,0,this.ActualWidth ,this.ActualHeight);
 
-      this.PushRenderEvent("draw");
-      this.Parent.PushRenderEvent("child_redraw");
-      
+            this.Context.strokeStyle="black";
+            this.Context.lineWidth = this.Thickness;            
+            this.Context.strokeRect(0,0,this.ActualWidth,this.ActualHeight);
+
+          this.Context.restore();
+          this.NeedRender = true;
+
+          super.Draw();
+
+    }
+      this.DrawChildren(); 
     
   }
 
-  public Render() : void {
-    super.Render();    
 
-  }
 
 
 }
